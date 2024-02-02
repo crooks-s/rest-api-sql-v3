@@ -5,6 +5,7 @@ const { asyncHandler } = require('../middleware/async-handler');
 const { check, validationResult } = require('express-validator');
 
 // RegExp -- may need to find a regex library
+// no numerics, allows hyphen
 const nameRegex = /^[a-zA-Z-]+(?:[\s-][a-zA-Z-]+)*$/;
 
 // construct router instance
