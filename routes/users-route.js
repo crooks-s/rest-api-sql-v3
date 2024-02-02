@@ -22,14 +22,20 @@ router.get('/users', asyncHandler(async (req, res) => {
 // and return a 201 code with no content
 router.post('/users', [
   // express validations
-  check('firstName').notEmpty().isLength({ min: 2 })
+  check('firstName')
+    .isLength({ min: 2 })
     .matches(nameRegex)
     .withMessage('First name is required. Please use only alphabetic characters.'),
-  check('lastName').notEmpty().isLength({ min: 2 })
+  check('lastName')
+    .isLength({ min: 2 })
     .matches(nameRegex)
     .withMessage('Last name is required. Please use only alphabetic characters.'),
-  check('emailAddress').isEmail().withMessage('Invalid email format'),
-  check('password').isLength({ min: 8, max: 20 }).withMessage('Must be 8-20 characters in length.')
+  check('emailAddress')
+    .isEmail()
+    .withMessage('Invalid email format'),
+  check('password')
+    .isLength({ min: 8, max: 20 })
+    .withMessage('Must be 8-20 characters in length.')
 ],
   asyncHandler(async (req, res) => {
     // errors will be sent to result if checks are invalid/falsy
