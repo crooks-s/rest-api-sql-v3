@@ -4,6 +4,7 @@ const express = require('express');
 const { asyncHandler } = require('../middleware/async-handler');
 const { check, validationResult } = require('express-validator');
 const bcryptjs = require('bcryptjs');
+const { authenticateUser } = require('../middleware/auth-user');
 
 // RegExp -- may need to find a regex library
 // no numerics, allows hyphen
@@ -15,8 +16,9 @@ const router = express.Router();
 // GET route that returns all properties and values
 // for the currently authenticated User
 // and 200 code
-router.get('/users', asyncHandler(async (req, res) => {
-  res.json({ message: "/users got GET! nice" });
+router.get('/users', authenticateUser, asyncHandler(async (req, res) => {
+  const user = req.currentUser;
+  res.json({ message: "/users got GET! nice", user });
 }));
 
 // POST route that will create a new user,
