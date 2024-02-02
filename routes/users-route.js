@@ -5,7 +5,7 @@ const { asyncHandler } = require('../middleware/async-handler');
 const { check, validationResult } = require('express-validator');
 
 // RegExp -- may need to find a regex library
-const nameRegex = /^[a-zA-Z]+(?:[\s-][a-zA-Z]+)*$/;
+const nameRegex = /^[a-zA-Z-]+(?:[\s-][a-zA-Z-]+)*$/;
 
 // construct router instance
 const router = express.Router();
