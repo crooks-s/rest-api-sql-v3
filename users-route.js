@@ -1,7 +1,7 @@
 'use strict';
 
 const express = require('express');
-const { asyncHandler } = require('./middleware/async-handler');
+const { asyncHandler } = require('../middleware/async-handler');
 
 // construct router instance
 const router = express.Router();

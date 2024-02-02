@@ -4,7 +4,7 @@ exports.asyncHandler = (cb) => {
     try {
       await cb(req, res, next);
     } catch (error) {
-      // forward erro to global error handler
+      // forward error to global error handler
       next(error);
     }
   }
