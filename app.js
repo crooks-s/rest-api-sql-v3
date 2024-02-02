@@ -8,6 +8,7 @@ const { sequelize } = require('./models');
 
 // import routes
 const usersRouter = require('./routes/users-route');
+const coursesRouter = require('./routes/courses-route');
 
 // variable to enable global error logging
 const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'true';
@@ -30,6 +31,7 @@ app.get('/', (req, res) => {
 
 // add routes
 app.use('/api', usersRouter);
+app.use('/api', coursesRouter);
 
 // send 404 if no other route matched
 app.use((req, res) => {
