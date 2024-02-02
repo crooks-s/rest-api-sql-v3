@@ -36,7 +36,7 @@ router.post('/users', [
   check('password')
     .isLength({ min: 8, max: 20 })
     .withMessage('Must be 8-20 characters in length.')
-],
+  ],
   asyncHandler(async (req, res) => {
     // errors will be sent to result if checks are invalid/falsy
     const result = validationResult(req);
@@ -44,9 +44,9 @@ router.post('/users', [
     if (result.isEmpty()) {
       res.status(201).json({ message: 'no content' })
     } else {
-      res.send({ errors: result.array() });
+      res.status(400).send({ errors: result.array() });
     }
-
-  }));
+  })
+);
 
 module.exports = router;
