@@ -29,14 +29,33 @@ router.post('/courses', [
   check('description').notEmpty()
 ],
   asyncHandler(async (req, res) => {
-    res.status(201).json({ message: '/courses POST --- no content ---' });
-  }));
+    // errors will be sent to result if checks are invalid/falsy
+    const result = validationResult(req);
+
+    if (result.isEmpty()) {
+      res.status(201).json({ message: 'no content' })
+    } else {
+      res.status(400).send({ errors: result.array() });
+    }
+  })
+);
 
 // PUT route that will update the corresponding course,
 // return 204, no content
-router.put('/courses/:id', asyncHandler(async (req, res) => {
-  res.status(204).json({ message: '/courses/id PUT --- no content ---' });
-}));
+router.put('/courses/:id', [
+  check('title').notEmpty(),
+  check('description').notEmpty()
+],
+  asyncHandler(async (req, res) => {
+    // errors will be sent to result if checks are invalid/falsy
+    const result = validationResult(req);
+
+    if (result.isEmpty()) {
+      res.status(204).json({ message: 'no content' })
+    } else {
+      res.status(400).send({ errors: result.array() });
+    }
+  }));
 
 // DELETE route that will delete the corresponding course,
 // return 204, no content
