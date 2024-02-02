@@ -3,6 +3,7 @@
 const express = require('express');
 const { asyncHandler } = require('../middleware/async-handler');
 const { check, validationResult } = require('express-validator');
+const { authenticateUser } = require('../middleware/auth-user');
 
 // construct router instance
 const router = express.Router();
@@ -24,7 +25,7 @@ router.get('/courses/:id', asyncHandler(async (req, res) => {
 // POST route that will create a new course,
 // set the Location header to the UTI for the newly created course,
 // return 201, no content
-router.post('/courses', [
+router.post('/courses', authenticateUser, [
   check('title')
     .notEmpty()
     .withMessage('Please enter a valid course title.'),
@@ -46,7 +47,7 @@ router.post('/courses', [
 
 // PUT route that will update the corresponding course,
 // return 204, no content
-router.put('/courses/:id', [
+router.put('/courses/:id', authenticateUser, [
   check('title')
     .notEmpty()
     .withMessage('Please enter a valid course title.'),
@@ -68,7 +69,7 @@ router.put('/courses/:id', [
 
 // DELETE route that will delete the corresponding course,
 // return 204, no content
-router.delete('/courses/:id', asyncHandler(async (req, res) => {
+router.delete('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
   res.status(204).json({ message: '/courses DELETE --- no content ---' });
 }));
 
