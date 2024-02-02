@@ -25,8 +25,12 @@ router.get('/courses/:id', asyncHandler(async (req, res) => {
 // set the Location header to the UTI for the newly created course,
 // return 201, no content
 router.post('/courses', [
-  check('title').notEmpty(),
-  check('description').notEmpty()
+  check('title')
+    .notEmpty()
+    .withMessage('Please enter a valid course title.'),
+  check('description')
+    .notEmpty()
+    .withMessage('Please enter a valid course description.'),
 ],
   asyncHandler(async (req, res) => {
     // errors will be sent to result if checks are invalid/falsy
@@ -43,8 +47,12 @@ router.post('/courses', [
 // PUT route that will update the corresponding course,
 // return 204, no content
 router.put('/courses/:id', [
-  check('title').notEmpty(),
-  check('description').notEmpty()
+  check('title')
+    .notEmpty()
+    .withMessage('Please enter a valid course title.'),
+  check('description')
+    .notEmpty()
+    .withMessage('Please enter a valid course description.'),
 ],
   asyncHandler(async (req, res) => {
     // errors will be sent to result if checks are invalid/falsy
@@ -55,7 +63,8 @@ router.put('/courses/:id', [
     } else {
       res.status(400).send({ errors: result.array() });
     }
-  }));
+  })
+);
 
 // DELETE route that will delete the corresponding course,
 // return 204, no content
