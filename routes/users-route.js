@@ -3,6 +3,7 @@
 const express = require('express');
 const { asyncHandler } = require('../middleware/async-handler');
 const { check, validationResult } = require('express-validator');
+const bcryptjs = require('bcryptjs');
 
 // RegExp -- may need to find a regex library
 // no numerics, allows hyphen
@@ -41,9 +42,12 @@ router.post('/users', [
   asyncHandler(async (req, res) => {
     // errors will be sent to result if checks are invalid/falsy
     const result = validationResult(req);
+    let { password } = req.body;
 
     if (result.isEmpty()) {
-      res.status(201).json({ message: 'no content' })
+      const hashedPassword = bcryptjs.hashSync(req.body.password, 10);
+      password = hashedPassword;
+      res.status(201).json();
     } else {
       res.status(400).send({ errors: result.array() });
     }
