@@ -26,7 +26,7 @@ exports.authenticateUser = async (req, res, next) => {
       }
     } else {
       // user not found
-      message = `User not found for email: ${user.emailAddress}`;
+      message = `User not found`;
     }
   } else {
     // auth header not found
