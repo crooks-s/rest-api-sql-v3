@@ -10,7 +10,7 @@ module.exports = (sequelize) => {
       allowNull: false,
       validate: {
         notNull: {
-          msg: 'A first name is required.',
+          msg: 'Please enter a valid input only containing letters and hyphens.',
         },
         notEmpty: {
           msg: 'A first name is required.'
@@ -22,7 +22,7 @@ module.exports = (sequelize) => {
       allowNull: false,
       validate: {
         notNull: {
-          msg: 'A last name is required.',
+          msg: 'Please enter a valid input only containing letters and hyphens.',
         },
         notEmpty: {
           msg: 'A last name is required.'
