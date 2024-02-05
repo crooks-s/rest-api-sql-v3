@@ -13,27 +13,23 @@ const nameRegex = /^[a-zA-Z-]+(?:[\s-][a-zA-Z-]+)*$/;
 // construct router instance
 const router = express.Router();
 
-// GET route that returns all properties and values
-// for the currently authenticated User
-// and 200 code
+// GET route that returns all properties and values of the user
 router.get('/users', authenticateUser, asyncHandler(async (req, res) => {
   const user = req.currentUser;
-  res.json({ message: "/users got GET! nice", user });
+  res.status(200).json({ user });
 }));
 
 // POST route that will create a new user,
-// set Location header to "/",
-// and return a 201 code with no content
 router.post('/users', [
   // express validations
   check('firstName')
     .isLength({ min: 2 })
     .matches(nameRegex)
-    .withMessage('First name is required. Please use only alphabetic characters.'),
+    .withMessage('First name is required. Please use only alphabetic characters and hyphens.'),
   check('lastName')
     .isLength({ min: 2 })
     .matches(nameRegex)
-    .withMessage('Last name is required. Please use only alphabetic characters.'),
+    .withMessage('Last name is required. Please use only alphabetic characters and hyphens.'),
   check('emailAddress')
     .isEmail()
     .withMessage('Invalid email format'),
@@ -46,10 +42,11 @@ router.post('/users', [
     const result = validationResult(req);
     let { password } = req.body;
 
+    // if result contains no errors ...
     if (result.isEmpty()) {
       const hashedPassword = bcryptjs.hashSync(req.body.password, 10);
       password = hashedPassword;
-      res.status(201).json();
+      res.status(201).location('/').end();
     } else {
       res.status(400).send({ errors: result.array() });
     }
