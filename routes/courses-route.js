@@ -1,9 +1,12 @@
 'use strict';
 
 const express = require('express');
-const { asyncHandler } = require('../middleware/async-handler');
 const { check, validationResult } = require('express-validator');
+
+const { asyncHandler } = require('../middleware/async-handler');
 const { authenticateUser } = require('../middleware/auth-user');
+
+const { Course, User } = require('../models');
 
 // construct router instance
 const router = express.Router();
@@ -12,7 +15,12 @@ const router = express.Router();
 // including the User associated with each course
 // and 200 code
 router.get('/courses', asyncHandler(async (req, res) => {
-  res.status(200).json({ message: '/courses got GET! nice' });
+  const courses = await Course.findAll({
+    include: {
+      model: User,
+    },
+  });
+    res.status(200).send(courses);
 }));
 
 // GET route that will return the corresponding course
