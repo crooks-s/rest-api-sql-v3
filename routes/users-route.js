@@ -18,7 +18,7 @@ const router = express.Router();
 // GET route that returns all properties and values of the user
 router.get('/users', authenticateUser, asyncHandler(async (req, res) => {
   const user = req.currentUser;
-  res.status(200).json({ user });
+  res.status(200).send({ user });
 }));
 
 // POST route that will create a new user,
@@ -51,7 +51,7 @@ router.post('/users', [
       } catch (error) {
         if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
           const errors = error.errors.map(err => err.message);
-          res.status(400).json({ errors });
+          res.status(400).send({ errors });
         }
       }
     } else {
