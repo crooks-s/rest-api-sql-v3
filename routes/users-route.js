@@ -1,7 +1,6 @@
 'use strict';
 
 const express = require('express');
-const bcryptjs = require('bcryptjs');
 const { check, validationResult } = require('express-validator');
 
 const { asyncHandler } = require('../middleware/async-handler');
