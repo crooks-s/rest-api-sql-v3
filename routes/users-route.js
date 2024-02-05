@@ -1,10 +1,13 @@
 'use strict';
 
 const express = require('express');
-const { asyncHandler } = require('../middleware/async-handler');
-const { check, validationResult } = require('express-validator');
 const bcryptjs = require('bcryptjs');
+const { check, validationResult } = require('express-validator');
+
+const { asyncHandler } = require('../middleware/async-handler');
 const { authenticateUser } = require('../middleware/auth-user');
+
+const { User } = require('../models');
 
 // RegExp -- may need to find a regex library
 // no numerics, allows hyphen
@@ -36,17 +39,22 @@ router.post('/users', [
   check('password')
     .isLength({ min: 8, max: 20 })
     .withMessage('Must be 8-20 characters in length.')
-  ],
+],
   asyncHandler(async (req, res) => {
-    // errors will be sent to result if checks are invalid/falsy
+    // errors will be sent to result if checks are invalid
     const result = validationResult(req);
-    let { password } = req.body;
 
     // if result contains no errors ...
     if (result.isEmpty()) {
-      const hashedPassword = bcryptjs.hashSync(req.body.password, 10);
-      password = hashedPassword;
-      res.status(201).location('/').end();
+      try {
+        await User.create(req.body);
+        res.status(201).location('/').end();
+      } catch (error) {
+        if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
+          const errors = error.errors.map(err => err.message);
+          res.status(400).json({ errors });
+        }
+      }
     } else {
       res.status(400).send({ errors: result.array() });
     }
