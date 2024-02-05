@@ -11,23 +11,28 @@ const { Course, User } = require('../models');
 // construct router instance
 const router = express.Router();
 
-// GET route that will return all courses
-// including the User associated with each course
-// and 200 code
+// GET route that will return all courses and associated users
 router.get('/courses', asyncHandler(async (req, res) => {
   const courses = await Course.findAll({
     include: {
       model: User,
     },
   });
+  if (courses.length > 0) {
     res.status(200).send(courses);
+  } else {
+    res.status(404).send({ message: 'No courses were found.' });
+  }
 }));
 
 // GET route that will return the corresponding course
 // including the User associated with that course
 // and 200 code
 router.get('/courses/:id', asyncHandler(async (req, res) => {
-  res.status(200).json({ message: '/courses/id got GET! nice' });
+  const courseId = req.params.id;
+  const course = await Course.findByPk(courseId);
+
+  res.status(200).send();
 }));
 
 // POST route that will create a new course,
