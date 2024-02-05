@@ -25,14 +25,19 @@ router.get('/courses', asyncHandler(async (req, res) => {
   }
 }));
 
-// GET route that will return the corresponding course
-// including the User associated with that course
-// and 200 code
+// GET route that will return the requested course and associated users
 router.get('/courses/:id', asyncHandler(async (req, res) => {
   const courseId = req.params.id;
-  const course = await Course.findByPk(courseId);
-
-  res.status(200).send();
+  const course = await Course.findByPk(courseId, {
+    include: {
+      model: User,
+    }
+  });
+  if (course) {
+    res.status(200).send(course);
+  } else {
+    res.status(404).send({ message: 'Course not found.' });
+  }
 }));
 
 // POST route that will create a new course,
