@@ -67,9 +67,11 @@ router.post('/courses', authenticateUser, [
         await course.save();
         res.status(201).location(`/courses/${course.id}`).end();
       } catch (error) {
-        if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
-          const errors = error.errors.map(err => err.message);
-          res.status(400).send({ errors });
+        if (error.name === "SequelizeValidationError") {
+          article = await Article.build(req.body);
+          res.render("articles/edit", { article, errors: error.errors, title: "Edit Article" })
+        } else {
+          throw error; //error caught in the asyncHandler's catch block
         }
       }
     } else {
@@ -79,7 +81,6 @@ router.post('/courses', authenticateUser, [
 );
 
 // PUT route that will update the corresponding course,
-// return 204, no content
 router.put('/courses/:id', authenticateUser, [
   check('title')
     .notEmpty()
@@ -89,11 +90,38 @@ router.put('/courses/:id', authenticateUser, [
     .withMessage('Please enter a valid course description.'),
 ],
   asyncHandler(async (req, res) => {
-    // errors will be sent to result if checks are invalid/falsy
+    // errors will be sent to result if checks are invalid
     const result = validationResult(req);
 
+    // if no errors in result ...
     if (result.isEmpty()) {
-      res.status(204).end()
+      let course;
+      try {
+        course = await Course.findByPk(req.params.id);
+        if (course) {
+          // update course instance with req.body
+          await course.set(req.body);
+
+          const user = await User.findByPk(req.body.userId);
+
+          // check if user exists before Course can be saved
+          if (!user) {
+            res.status(404).json({ message: 'User not found' });
+          }
+
+          await course.save();
+          res.status(204).end();
+        } else {
+          res.status(404).json({ message: 'Course not found.' });
+        }
+      } catch (error) {
+        if (error.name === "SequelizeValidationError") {
+          article = await Article.build(req.body);
+          res.render("articles/edit", { article, errors: error.errors, title: "Edit Article" })
+        } else {
+          throw error; //error caught in the asyncHandler's catch block
+        }
+      }
     } else {
       res.status(400).send({ errors: result.array() });
     }
@@ -101,9 +129,14 @@ router.put('/courses/:id', authenticateUser, [
 );
 
 // DELETE route that will delete the corresponding course,
-// return 204, no content
 router.delete('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
-  res.status(204).json({ message: '/courses DELETE --- no content ---' });
+  const course = await Course.findByPk(req.params.id);
+  if (course) {
+    await course.destroy();
+    res.status(204).end();
+  } else {
+    res.status(404).json({ message: 'Course not found' });
+  }
 }));
 
 module.exports = router;
