@@ -19,9 +19,9 @@ router.get('/courses', asyncHandler(async (req, res) => {
     },
   });
   if (courses.length > 0) {
-    res.status(200).send(courses);
+    res.status(200).json(courses);
   } else {
-    res.status(404).send({ message: 'No courses were found.' });
+    res.status(404).json({ message: 'No courses were found.' });
   }
 }));
 
@@ -52,11 +52,28 @@ router.post('/courses', authenticateUser, [
     .withMessage('Please enter a valid course description.'),
 ],
   asyncHandler(async (req, res) => {
-    // errors will be sent to result if checks are invalid/falsy
+    // errors are sent to result if checks are invalid
     const result = validationResult(req);
 
+    // if no errors in result ...
     if (result.isEmpty()) {
-      res.status(201).json({ message: 'no content' })
+      try {
+        const course = await Course.build(req.body);
+        const user = await User.findByPk(req.body.userId);
+
+        // check if user exists before Course can be saved
+        if (!user) {
+          res.status(404).json({ message: 'User not found' });
+        }
+
+        await course.save();
+        res.status(201).location(`/courses/${course.id}`).end();
+      } catch (error) {
+        if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
+          const errors = error.errors.map(err => err.message);
+          res.status(400).send({ errors });
+        }
+      }
     } else {
       res.status(400).send({ errors: result.array() });
     }
@@ -78,7 +95,7 @@ router.put('/courses/:id', authenticateUser, [
     const result = validationResult(req);
 
     if (result.isEmpty()) {
-      res.status(204).json({ message: 'no content' })
+      res.status(204).end()
     } else {
       res.status(400).send({ errors: result.array() });
     }
