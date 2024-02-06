@@ -41,8 +41,6 @@ router.get('/courses/:id', asyncHandler(async (req, res) => {
 }));
 
 // POST route that will create a new course,
-// set the Location header to the UTI for the newly created course,
-// return 201, no content
 router.post('/courses', authenticateUser, [
   check('title')
     .notEmpty()
