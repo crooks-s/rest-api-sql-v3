@@ -1,11 +1,13 @@
 'use strict';
 
 const express = require('express');
-const { check, validationResult } = require('express-validator');
 
+// Middleware functions
 const { asyncHandler } = require('../middleware/async-handler');
 const { authenticateUser } = require('../middleware/auth-user');
+const { check, validationResult } = require('express-validator');
 
+// Database Model
 const { User } = require('../models');
 
 // RegExp -- may need to find a regex library
@@ -15,15 +17,14 @@ const nameRegex = /^[a-zA-Z-]+(?:[\s-][a-zA-Z-]+)*$/;
 // construct router instance
 const router = express.Router();
 
-// GET route that returns all properties and values of the user
+/* GET the user */
 router.get('/users', authenticateUser, asyncHandler(async (req, res) => {
   const user = req.currentUser;
   res.status(200).json({ user });
 }));
 
-// POST route that will create a new user,
+/* CREATE a new user */
 router.post('/users', [
-  // express validations
   check('firstName')
     .isLength({ min: 2 })
     .matches(nameRegex)
