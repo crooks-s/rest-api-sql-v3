@@ -46,13 +46,15 @@ router.post('/users', [
 
     // if result contains no errors ...
     if (result.isEmpty()) {
+      let user;
       try {
         await User.create(req.body);
         res.status(201).location('/').end();
       } catch (error) {
-        if (error.name === "SequelizeValidationError") {
-          article = await Article.build(req.body);
-          res.render("articles/edit", { article, errors: error.errors, title: "Edit Article" })
+        if (error.name === "SequelizeValidationError" || error.name === "SequelizeUniqueConstraintError") {
+          user = await User.build(req.body);
+          const errors = error.errors.map(err => err.message);
+          res.status(400).json({ errors });   
         } else {
           throw error; //error caught in the asyncHandler's catch block
         }
