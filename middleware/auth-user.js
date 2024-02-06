@@ -21,15 +21,12 @@ exports.authenticateUser = async (req, res, next) => {
         // store the user on the Request object
         req.currentUser = user;
       } else {
-        // not authenticated 
         message = `Authentication failure for ${user.emailAddress}`;
       }
     } else {
-      // user not found
       message = `User not found`;
     }
   } else {
-    // auth header not found
     message = 'Authorization header not found';
   }
 
