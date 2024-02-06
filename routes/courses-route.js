@@ -77,7 +77,7 @@ router.post('/courses', authenticateUser, [
         }
       }
     } else {
-      res.status(400).send({ errors: result.array() });
+      res.status(400).send({ errors: result.array() }); // runs if empty title or description
     }
   })
 );
@@ -125,7 +125,7 @@ router.put('/courses/:id', authenticateUser, [
         }
       }
     } else {
-      res.status(400).send({ errors: result.array() });
+      res.status(400).send({ errors: result.array() }); // runs if empty title or description
     }
   })
 );

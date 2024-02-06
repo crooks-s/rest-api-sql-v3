@@ -58,7 +58,7 @@ router.post('/users', [
         }
       }
     } else {
-      res.status(400).json({ errors: result.array() });
+      res.status(400).json({ errors: result.array() }); // runs if invalid values in user input fields
     }
   })
 );
