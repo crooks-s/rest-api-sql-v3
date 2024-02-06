@@ -1,17 +1,19 @@
 'use strict';
 
 const express = require('express');
-const { check, validationResult } = require('express-validator');
 
+// Middleware functions
 const { asyncHandler } = require('../middleware/async-handler');
 const { authenticateUser } = require('../middleware/auth-user');
+const { check, validationResult } = require('express-validator');
 
+// Database Models 
 const { Course, User } = require('../models');
 
-// construct router instance
+// Construct router instance
 const router = express.Router();
 
-// GET route that will return all courses and associated users
+/* GET all courses and their owners(users) */
 router.get('/courses', asyncHandler(async (req, res) => {
   const courses = await Course.findAll({
     include: {
@@ -25,7 +27,7 @@ router.get('/courses', asyncHandler(async (req, res) => {
   }
 }));
 
-// GET route that will return the requested course and associated users
+/* GET a course and its owner(user) */
 router.get('/courses/:id', asyncHandler(async (req, res) => {
   const courseId = req.params.id;
   const course = await Course.findByPk(courseId, {
@@ -40,7 +42,7 @@ router.get('/courses/:id', asyncHandler(async (req, res) => {
   }
 }));
 
-// POST route that will create a new course,
+/* CREATE a new course */
 router.post('/courses', authenticateUser, [
   check('title')
     .notEmpty()
@@ -80,7 +82,7 @@ router.post('/courses', authenticateUser, [
   })
 );
 
-// PUT route that will update the corresponding course,
+/* UPDATE a course */
 router.put('/courses/:id', authenticateUser, [
   check('title')
     .notEmpty()
@@ -110,7 +112,7 @@ router.put('/courses/:id', authenticateUser, [
           }
 
           await course.save();
-          res.status(204).end();
+          res.status(204).location(`/courses/${course.id}`).end();
         } else {
           res.status(404).json({ message: 'Course not found.' });
         }
@@ -128,7 +130,7 @@ router.put('/courses/:id', authenticateUser, [
   })
 );
 
-// DELETE route that will delete the corresponding course,
+/* DELETE a course */
 router.delete('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
   const course = await Course.findByPk(req.params.id);
   if (course) {
