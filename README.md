@@ -21,7 +21,7 @@ Clone the project.
 <br /> Run ```npm install``` or ```npm i``` to install dependencies.
 <br /> Run ```npm start``` to start server.
 <br /> In your selected web browser, go to [http://localhost:5000/](http://localhost:5000/)
-<br /> Open (Postman)[https://www.postman.com/downloads/]
+<br /> Download and open [Postman](https://www.postman.com/downloads/)
 <br /> Import ```RESTAPI.postman_collection.json``` to Postman
 <br /> Use Postman to test Routes/Methods using the imported collection
 
